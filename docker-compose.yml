@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  camunda:
+    image: bashkirtsevich/camunda
+    volumes:
+      - ./runtime/logs/camunda:/camunda/logs
+    ports:
+      - "8080:8080"
+
+#    environment:
+#      DB_DRIVER: org.postgresql.Driver
+#      DB_URL: jdbc:postgresql://db:5432/camunda
+#      DB_USER: camunda
+#      DB_PASSWORD: camunda
+#    depends_on:
+#      - db
+#  db:
+#    image: postgres
+#    environment:
+#      POSTGRES_USER: camunda
+#      POSTGRES_PASSWORD: camunda
+#    volumes:
+#      - ./postgres:/var/lib/postgresql/data
+#    healthcheck:
+#        test: ["CMD-SHELL", "pg_isready -U camunda"]
+#        interval: 5s
+#        timeout: 30s
+#        retries: 3
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/sites-enabled/default
+      - ./:/app
+    ports:
+      - "8000:80"
+  php-fpm:
+    image: php:7.1-fpm
+    working_dir: /app
+    volumes:
+      - ./:/app
